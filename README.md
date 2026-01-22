@@ -68,16 +68,3 @@ ViewModel:
 - tekee sovelluksesta selkeämmän ja laajennettavamman
 
 ViewModel on parempi ratkaisu kuin pelkkä `remember`, kun sovelluksen toiminnallisuus kasvaa.
-
----
-
-## Pakolliset tuotokset
-- GitHub-repositorio (tag: `week2`)
-- YouTube-demo (1–2 min), jossa näytetään:
-  - tehtävän lisääminen
-  - done-tilan vaihtaminen
-  - tehtävän poistaminen
-  - suodatus ViewModelin kautta
-- APK (debug build)
-
----
