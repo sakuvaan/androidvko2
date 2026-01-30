@@ -1,3 +1,8 @@
+## hox vko1 puuttuu, tein sen suoraan vko2 koska en kerenny palauttaa.
+
+
+## Viikko 2
+
 ## Datamalli ja funktiot
 
 Sovelluksessa on Task-data class, jossa on id, title, description, priority, dueDate ja done.  
@@ -18,3 +23,15 @@ Kun ViewModelissa oleva lista muuttuu, näkymä päivittyy ilman erillistä päi
 
 ViewModelia käytetään, koska se pitää sovelluksen tilan erillään käyttöliittymästä.  
 Se on parempi ratkaisu kuin pelkkä remember, kun sovellukseen tulee enemmän toiminnallisuutta.
+
+## Viikko 3
+
+### MVVM
+Sovellus on tehty MVVM-mallilla.
+Model sisältää datan (Task), ViewModel hoitaa tilan ja logiikan ja View (Compose) näyttää UI:n.
+UI ei muokkaa dataa suoraan, vaan kutsuu ViewModelin funktioita.
+
+### StateFlow Composessa
+TaskViewModel käyttää StateFlowta listan tilaan.
+HomeScreen kuuntelee sitä collectAsState():lla.
+Kun lista muuttuu (add, toggle, remove, update), Compose päivittää näkymän automaattisesti.
