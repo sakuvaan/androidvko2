@@ -4,63 +4,31 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.viikko1.model.Task
 import com.example.viikko1.viewmodel.TaskViewModel
+import androidx.compose.runtime.collectAsState
+
 
 @Composable
-fun HomeScreen(vm: TaskViewModel = viewModel()) {
-
+fun HomeScreen(
+    vm: TaskViewModel,
+    goCalendar: () -> Unit
+) {
     val tasks by vm.tasks.collectAsState()
     var selected by remember { mutableStateOf<Task?>(null) }
-
-    var title by remember { mutableStateOf("") }
-    var desc by remember { mutableStateOf("") }
+    var showAdd by remember { mutableStateOf(false) }
 
     Column(Modifier.fillMaxSize().padding(16.dp)) {
-        Text("week3", style = MaterialTheme.typography.headlineSmall)
+        Text("Home", style = MaterialTheme.typography.headlineSmall)
         Spacer(Modifier.height(12.dp))
 
-        // Add UI
-        OutlinedTextField(
-            value = title,
-            onValueChange = { title = it },
-            label = { Text("Title") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(Modifier.height(8.dp))
-        OutlinedTextField(
-            value = desc,
-            onValueChange = { desc = it },
-            label = { Text("Description") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(Modifier.height(8.dp))
-
-        Button(onClick = {
-            val nextId = (tasks.maxOfOrNull { it.id } ?: 0) + 1
-            vm.addTask(
-                Task(
-                    id = nextId,
-                    title = if (title.isBlank()) "Uusi task" else title,
-                    description = if (desc.isBlank()) "-" else desc,
-                    priority = 1,
-                    dueDate = "2026-02-01",
-                    done = false
-                )
-            )
-            title = ""
-            desc = ""
-        }) {
-            Text("Add")
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = goCalendar) { Text("Calendar") }
+            Button(onClick = { showAdd = true }) { Text("Add") }
         }
 
         Spacer(Modifier.height(12.dp))
@@ -77,6 +45,7 @@ fun HomeScreen(vm: TaskViewModel = viewModel()) {
                     Column {
                         Text(task.title)
                         Text(task.description)
+                        Text(task.dueDate)
                     }
                     Checkbox(
                         checked = task.done,
@@ -87,12 +56,28 @@ fun HomeScreen(vm: TaskViewModel = viewModel()) {
         }
     }
 
+    if (showAdd) {
+        val nextId = (tasks.maxOfOrNull { it.id } ?: 0) + 1
+        AddTaskDialog(
+            nextId = nextId,
+            onAdd = { vm.addTask(it) },
+            onClose = { showAdd = false }
+        )
+    }
+
     selected?.let { task ->
         DetailScreen(
             task = task,
-            onSave = { vm.updateTask(it) },
-            onDelete = { vm.removeTask(it) },
-            onClose = { selected = null }
+            onSave = { updated ->
+                vm.updateTask(updated)
+            },
+            onDelete = { id ->
+                vm.removeTask(id)
+            },
+            onClose = {
+                selected = null
+            }
         )
     }
+
 }

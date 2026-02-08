@@ -35,3 +35,45 @@ UI ei muokkaa dataa suoraan, vaan kutsuu ViewModelin funktioita.
 TaskViewModel käyttää StateFlowta listan tilaan.
 HomeScreen kuuntelee sitä collectAsState():lla.
 Kun lista muuttuu (add, toggle, remove, update), Compose päivittää näkymän automaattisesti.
+
+
+# Task-app (Week 4)
+
+Tämä projekti on jatkoa aiemmille viikoille. Sovellus on tehty Jetpack Composella ja noudattaa MVVM-arkkitehtuuria.  
+Week 4:ssa mukaan lisättiin navigointi ja kalenterinäkymä.
+
+## Rakenne (MVVM)
+- **Model**
+  - `Task` – tehtävän data (id, title, description, dueDate, done)
+- **ViewModel**
+  - `TaskViewModel`
+  - Säilyttää tehtävälistan `StateFlow<List<Task>>`-muodossa
+  - Funktiot: `addTask`, `toggleDone`, `removeTask`, `updateTask`
+- **View (Compose)**
+  - `HomeScreen` – tehtävälista + add/edit
+  - `CalendarScreen` – tehtävät ryhmiteltynä päivämäärän mukaan
+  - `DetailScreen` – tehtävän muokkaus / poisto dialogina
+  - `AddTaskDialog` – uuden tehtävän lisääminen
+
+## Navigointi (Compose Navigation)
+Sovellus käyttää Jetpack Compose Navigationia.
+- `NavHost` on MainActivityssa
+- Reitit:
+  - `home` → HomeScreen
+  - `calendar` → CalendarScreen
+- Sama `TaskViewModel` jaetaan molemmille ruuduille, joten tila pysyy synkassa.
+
+## Tilan hallinta
+- UI kuuntelee ViewModelia `collectAsState()`-kutsulla
+- Kun tehtävää lisätään, muokataan tai poistetaan:
+  - muutos näkyy heti sekä Home- että Calendar-näkymässä
+
+## Kalenterinäkymä
+- Tehtävät ryhmitellään `dueDate`-kentän perusteella
+- Päivämäärä toimii otsikkona
+- Tehtävää voi klikata ja avata editointi-dialogin
+
+## Dialogit
+- Lisääminen ja editointi tehdään `AlertDialog`illa
+- Ei omia navigaatioreittejä dialogeille
+- Sama dialogilogiikka toimii molemmissa näkymissä

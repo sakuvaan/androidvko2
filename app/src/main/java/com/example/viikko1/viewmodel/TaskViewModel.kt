@@ -16,8 +16,8 @@ class TaskViewModel : ViewModel() {
     }
 
     fun toggleDone(id: Int) {
-        _tasks.value = _tasks.value.map { t ->
-            if (t.id == id) t.copy(done = !t.done) else t
+        _tasks.value = _tasks.value.map {
+            if (it.id == id) it.copy(done = !it.done) else it
         }
     }
 
@@ -26,8 +26,8 @@ class TaskViewModel : ViewModel() {
     }
 
     fun updateTask(updated: Task) {
-        _tasks.value = _tasks.value.map { t ->
-            if (t.id == updated.id) updated else t
+        _tasks.value = _tasks.value.map {
+            if (it.id == updated.id) updated else it
         }
     }
 }
