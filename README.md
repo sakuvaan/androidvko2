@@ -77,3 +77,40 @@ Sovellus käyttää Jetpack Compose Navigationia.
 - Lisääminen ja editointi tehdään `AlertDialog`illa
 - Ei omia navigaatioreittejä dialogeille
 - Sama dialogilogiikka toimii molemmissa näkymissä
+
+# Week5 – Weather App
+
+## Retrofit
+
+Retrofit hoitaa HTTP-pyyntöjen tekemisen OpenWeatherMap API:in.
+Se määrittelee rajapinnan (WeatherApi) ja tekee verkko-kutsun annetulla kaupungilla.
+
+## JSON → dataluokat
+
+API palauttaa JSON-vastauksen.
+Gson muuntaa JSONin automaattisesti Kotlinin data class -rakenteeksi (WeatherResponse).
+
+## Coroutines
+
+API-kutsu tehdään coroutinella taustasäikeessä ViewModelissa.
+UI ei jäädy, koska verkkokutsu ei blokkaa pääsäiettä.
+Kun data saapuu, tila päivittyy.
+
+## UI-tila
+
+ViewModel hallitsee WeatherUiState-oliota (StateFlow).
+Compose kuuntelee tilaa collectAsState()-funktiolla.
+Kun tila muuttuu, UI päivittyy automaattisesti.
+
+## API-key
+
+API-key ei ole kovakoodattu.
+
+Se tallennetaan:
+local.properties → BuildConfig → Retrofit
+
+local.properties:
+OPENWEATHER_API_KEY=oma_avain
+
+build.gradle.kts lukee avaimen ja lisää sen BuildConfigiin.
+Retrofit käyttää BuildConfig.OPENWEATHER_API_KEY arvoa.
