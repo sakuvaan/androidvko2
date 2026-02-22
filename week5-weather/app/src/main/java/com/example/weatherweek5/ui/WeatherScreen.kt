@@ -3,7 +3,6 @@ package com.example.weatherweek5.ui
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -14,6 +13,7 @@ fun WeatherScreen(vm: WeatherViewModel = viewModel()) {
     val state = vm.uiState.collectAsState().value
 
     Column(Modifier.fillMaxSize().padding(16.dp)) {
+
         Text("Weather", style = MaterialTheme.typography.headlineSmall)
         Spacer(Modifier.height(12.dp))
 
@@ -24,31 +24,33 @@ fun WeatherScreen(vm: WeatherViewModel = viewModel()) {
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(12.dp))
 
         Button(
             onClick = { vm.fetchWeather() },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !state.loading
         ) {
-            Text("Hae sää")
+            Text(if (state.loading) "Haetaan..." else "Hae sää")
         }
 
         Spacer(Modifier.height(16.dp))
 
-        if (state.isLoading) {
-            CircularProgressIndicator()
-        }
-
         state.error?.let {
-            Spacer(Modifier.height(8.dp))
             Text(it)
+            Spacer(Modifier.height(12.dp))
         }
 
-        state.result?.let { res ->
-            Spacer(Modifier.height(8.dp))
-            Text("Kaupunki: ${res.name}")
-            Text("Lämpö: ${res.main.temp} °C")
-            Text("Kuvaus: ${res.weather.firstOrNull()?.description ?: "-"}")
+        val city = state.shownCity
+        val temp = state.tempC
+        val desc = state.description
+
+        if (city != null && temp != null && desc != null) {
+            Text("Kaupunki: $city")
+            Text("Lämpö: $temp °C")
+            Text("Kuvaus: $desc")
+        } else {
+            Text("Ei vielä haettua dataa")
         }
     }
 }

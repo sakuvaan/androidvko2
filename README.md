@@ -114,3 +114,60 @@ OPENWEATHER_API_KEY=oma_avain
 
 build.gradle.kts lukee avaimen ja lisää sen BuildConfigiin.
 Retrofit käyttää BuildConfig.OPENWEATHER_API_KEY arvoa.
+
+# Week6 – Weather app + Room
+
+Tällä viikolla lisäsin sovellukseen Room-tietokannan.
+
+Sovellus hakee säätiedot OpenWeatherMap API:sta ja tallentaa viimeisimmän haun Roomiin.
+UI näyttää aina Roomista luetun datan.
+
+## Mitä Room tekee?
+
+Room on Androidin tietokantakirjasto.
+
+Se helpottaa paikallisen tietokannan käyttöä, koska:
+- määritellään Entity (taulu)
+- tehdään DAO (kyselyt)
+- luodaan Database
+- käytetään Repositorya
+- ViewModel käyttää Repositorya
+
+Room generoi tarvittavan koodin taustalla.
+
+## Miten data kulkee
+
+1. Käyttäjä syöttää kaupungin
+2. ViewModel kutsuu Repositorya
+3. Repository hakee sään API:sta
+4. Data tallennetaan Roomiin
+5. UI kuuntelee Roomin Flow-dataa
+6. Kun tietokanta päivittyy → UI päivittyy automaattisesti
+
+## Välimuisti
+
+Viimeisin haettu sää tallennetaan Roomiin.
+UI näyttää aina Roomista luetun datan.
+
+Halutessa voidaan tarkistaa, onko data liian vanhaa ja hakea API:sta uudelleen.
+
+## Coroutines
+
+- API-kutsu tehdään taustalla (viewModelScope.launch)
+- DAO-funktiot ovat suspend
+- UI ei jäädy haun aikana
+
+## UI-tila
+
+ViewModel hallitsee WeatherUiState-oliota.
+
+Compose käyttää collectAsState()-funktiota,
+joten kun tila muuttuu, UI päivittyy automaattisesti.
+
+## API-key
+
+API-avain on tallennettu näin:
+
+local.properties → build.gradle → BuildConfig → Retrofit
+
+API-key ei mene GitHubiin.
